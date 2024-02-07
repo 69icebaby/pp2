@@ -45,5 +45,6 @@ txt = txt.replace("H", "J")
 
 #Ex.8
 age = 18
-txt = "My name is Alimzhan, and I am {}"
-print(txt.format(age))
+h = 175
+txt = "My name is Alimzhan, and I am {1}"
+print(txt.format(age, h))
