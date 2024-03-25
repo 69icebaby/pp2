@@ -1,57 +1,35 @@
 import pygame
+import sys
+from datetime import datetime
+import math
+
 pygame.init()
-
-W,H = 600,400
-WHITE = (255,255,255)
-RED = (255,0,0)
-
-sc = pygame.display.set_mode((W,H), pygame.RESIZABLE)
-
-clock = pygame.time.Clock()
-FPS = 60
-
-x = W // 2
-y = H //2
-speed = 5
-circle_radius = 25
-
-flUp = flDown =flLeft = flRight = False
+WIDTH, HEIGHT = 849, 833
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Часы")
+clock_img = pygame.image.load("mickeyclock.jpeg")
 
 while True:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            exit()
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT: 
-                flLeft = True
-            elif event.key == pygame.K_RIGHT:
-                flRight = True
-            elif event.key == pygame.K_UP:
-                flUp = True
-            elif event.key == pygame.K_DOWN:
-                flDown = True
-        elif event.type == pygame.KEYUP:
-            if event.key in [pygame.K_LEFT, pygame.K_RIGHT, pygame.K_DOWN, pygame.K_UP]:
-                flUp = flDown = flLeft = flRight = False
-        elif event.type == pygame.VIDEORESIZE:
-            W, H = event.size 
-            x = W // 2 
-            y = H // 2
-            sc = pygame.display.set_mode((W, H), pygame.RESIZABLE)
+    for e in pygame.event.get():
+        if e.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
 
-    if flLeft and x > 0:
-        x -= speed
-    elif flRight and x < W:
-        x += speed
-    if flUp and y > 0:
-        y -= speed
-    elif flDown and y < H:
-        y += speed
+    now_time = datetime.now()
+    h, m = now_time.hour, now_time.minute
+    screen.blit(clock_img, (0, 0))
 
+    a_h = (h % 12 + m / 60) * 360 / 12
+    a_m = m * 360 / 60
 
-    sc.fill(WHITE)
-    pygame.draw.circle(sc, RED, (x, y), circle_radius)
-    pygame.display.update()
-            
+    h_l = 80
+    m_l = 110
+    h_x = 200 + h_l * math.cos(math.radians(90 - a_h))
+    h_y = 200 - h_l * math.sin(math.radians(90 - a_h))
+    m_x = 200 + m_l * math.cos(math.radians(90 - a_m))
+    m_y = 200 - m_l * math.sin(math.radians(90 - a_m))
 
-    clock.tick(FPS)
+    pygame.draw.line(screen, (0, 0, 0), (424, 416), (h_x, h_y), 8)
+    pygame.draw.line(screen, (255, 0, 0), (424, 416), (m_x, m_y), 4)
+
+    pygame.display.flip()
